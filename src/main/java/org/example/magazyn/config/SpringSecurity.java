@@ -21,8 +21,8 @@ public class SpringSecurity implements WebMvcConfigurer{
 
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/magazyn/uploads/**")
-                .addResourceLocations("file:magazyn/uploads/");
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
     }
 
     @Autowired
@@ -44,7 +44,7 @@ public class SpringSecurity implements WebMvcConfigurer{
                         .requestMatchers("/reservations").hasAnyRole("ADMIN", "WAREHOUSEMAN", "MANAGER")
                         .requestMatchers("/users", "/updateRoles").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers("/history/**").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers("/magazyn/uploads/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
