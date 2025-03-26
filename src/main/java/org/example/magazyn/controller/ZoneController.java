@@ -7,7 +7,6 @@ import org.example.magazyn.entity.Zone;
 import org.example.magazyn.service.ZoneService;
 import org.example.magazyn.service.ProductService;
 import org.example.magazyn.service.HistoryService;
-import org.example.magazyn.service.UserService; // Add this import if you have a UserService
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -35,9 +34,6 @@ public class ZoneController {
         if (authentication == null || !authentication.isAuthenticated()) {
             return 1L; // Default ID or system ID, adjust as needed
         }
-
-        // Get the username/email from authentication
-        String username = authentication.getName();
 
         // Option 1: If you store the user ID in the authentication principal
         // Try to get it from authentication principal
