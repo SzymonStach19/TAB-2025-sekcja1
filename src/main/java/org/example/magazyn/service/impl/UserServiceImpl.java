@@ -36,17 +36,30 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userDto.getEmail());
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-            Role role = roleRepository.findByName("ROLE_USER");
-            if(role == null){
-                role = checkRoleExist();
+            long userCount = userRepository.count();
+            
+            Role role;
+            if (userCount == 0) {
+                role = roleRepository.findByName("ROLE_ADMIN");
+                if (role == null) {
+                    role = new Role();
+                    role.setName("ROLE_ADMIN");
+                    role = roleRepository.save(role);
+                }
+            } else {
+                role = roleRepository.findByName("ROLE_USER");
+                if (role == null) {
+                    role = checkRoleExist();
+                }
             }
+            
             user.setRoles(Arrays.asList(role));
 
-            System.out.println("Próba zapisu użytkownika: " + user.getEmail());
+            System.out.println("Attempting to save user: " + user.getEmail());
             User savedUser = userRepository.save(user);
-            System.out.println("Użytkownik zapisany pomyślnie: " + savedUser.getEmail());
+            System.out.println("User saved successfully: " + savedUser.getEmail());
         } catch (Exception e) {
-            System.err.println("Błąd przy zapisie użytkownika: " + e.getMessage());
+            System.err.println("Error when saving user: " + e.getMessage());
             e.printStackTrace();
         }
     }
