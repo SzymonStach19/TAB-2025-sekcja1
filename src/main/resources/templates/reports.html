@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generowanie raportów</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f5f5;
+    }
+    
+    .tabs-component {
+      width: 100%;
+      margin: 0 auto;
+    }
+    
+    .tabs {
+      position: relative;
+      display: flex;
+      list-style: none;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 0;
+      margin: 0 0 30px;
+    }
+    
+    .tab {
+      position: relative;
+      padding: 16px 20px;
+      cursor: pointer;
+      z-index: 2;
+      flex: 1;
+      text-align: center;
+      transition: color 0.3s ease;
+    }
+    
+    .tab.active {
+      color: #fff;
+    }
+    
+    .slider {
+      position: absolute;
+      height: 100%;
+      background: #343a40;
+      z-index: 1;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/}">Magazyn</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/products}">Produkty</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasAnyRole('WAREHOUSEMAN', 'MANAGER', 'ADMIN')">
+          <a class="nav-link" th:href="@{/zones}">Strefy</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasAnyRole('WAREHOUSEMAN', 'MANAGER', 'ADMIN')">
+          <a class="nav-link" th:href="@{/reservations}">Rezerwacje</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+          <a class="nav-link" th:href="@{/users}">Użytkownicy</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+          <a class="nav-link" th:href="@{/history}">Historia operacji</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+          <a class="nav-link" th:href="@{/reports}">Raporty</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="nav-link" th:href="@{/login}">Logowanie</a>
+        </li>
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="nav-link" th:href="@{/register}">Rejestracja</a>
+        </li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <a class="nav-link" th:href="@{/logout}">Wyloguj się</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid px-4 py-4">
+  <div class="row align-items-center mb-4">
+    <div class="col">
+      <h1 class="display-6 fw-bold">Generowanie raportów</h1>
+      <p class="text-muted">Wybierz typ raportu i określ parametry, aby wygenerować raport PDF</p>
+    </div>
+  </div>
+
+  <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <span th:text="${successMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+  <div class="tabs-component">
+    <!-- Zakładki -->
+    <ul class="tabs">
+      <li class="tab active" data-panel="#profit-report">
+        <span class="title">Raport generowanego zysku</span>
+      </li>
+      <li class="tab" data-panel="#reservation-report">
+        <span class="title">Raport potwierdzonych rezerwacji</span>
+      </li>
+      <div class="slider"></div>
+    </ul>
+
+    <!-- Zawartość zakładek -->
+    <div id="profit-report" class="tab-content active">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+          <h5 class="mb-0">Raport generowanego zysku</h5>
+        </div>
+        <div class="card-body">
+          <p>Raport przedstawia analizę zysków magazynu na podstawie ilości produktów w zrealizowanych rezerwacjach, ceny zakupu i sprzedaży.</p>
+          
+          <form th:action="@{/reports/profit}" method="post" class="mt-4">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="productCategory" class="form-label">Kategoria produktu</label>
+                  <select class="form-select" id="productCategory" name="productCategory">
+                    <option value="">Wszystkie kategorie</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="warehouseZone" class="form-label">Strefa magazynowa</label>
+                  <select class="form-select" id="warehouseZone" name="warehouseZone">
+                    <option value="">Wszystkie strefy</option>
+                    <option th:each="zone : ${zones}" th:value="${zone.id}" th:text="${zone.name}"></option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="startDate" class="form-label">Data początkowa</label>
+                  <input type="date" class="form-control" id="startDate" name="startDate" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="endDate" class="form-label">Data końcowa</label>
+                  <input type="date" class="form-control" id="endDate" name="endDate" required>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Agregacja</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="profitAggregation" name="aggregation" value="profit" checked disabled>
+                <label class="form-check-label" for="profitAggregation">
+                  Wygenerowany zysk magazynu
+                </label>
+              </div>
+            </div>
+            
+            <div class="d-flex justify-content-end mt-4">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Generuj PDF
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div id="reservation-report" class="tab-content">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+          <h5 class="mb-0">Raport potwierdzonych rezerwacji</h5>
+        </div>
+        <div class="card-body">
+          <p>Raport przedstawia podsumowanie rezerwacji produktów w magazynie. Zawiera informacje o łącznej liczbie dokonanych rezerwacji, liczbie rezerwacji potwierdzonych oraz anulowanych. Dodatkowo raport wskazuje najczęściej rezerwowane produkty.</p>
+          
+          <form th:action="@{/reports/reservations}" method="post" class="mt-4">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="reservationCategory" class="form-label">Kategoria produktu</label>
+                  <select class="form-select" id="reservationCategory" name="productCategory">
+                    <option value="">Wszystkie kategorie</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="productBrand" class="form-label">Marka produktu</label>
+                  <select class="form-select" id="productBrand" name="productBrand">
+                    <option value="">Wszystkie marki</option>
+                    <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="priceRange" class="form-label">Zakres ceny produktu</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Od" min="0">
+                    <span class="input-group-text">-</span>
+                    <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Do" min="0">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group mt-3">
+              <label class="form-label">Agregacja</label>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="totalReservations" name="aggregation" value="totalReservations" checked>
+                    <label class="form-check-label" for="totalReservations">
+                      Łączna liczba rezerwacji
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="confirmedReservations" name="aggregation" value="confirmedReservations" checked>
+                    <label class="form-check-label" for="confirmedReservations">
+                      Ilość potwierdzonych rezerwacji
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cancelledReservations" name="aggregation" value="cancelledReservations" checked>
+                    <label class="form-check-label" for="cancelledReservations">
+                      Ilość anulowanych rezerwacji
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="turnover" name="aggregation" value="turnover" checked>
+                    <label class="form-check-label" for="turnover">
+                      Obrót
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="d-flex justify-content-end mt-4">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Generuj PDF
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Obsługa przesuwanych zakładek
+    const tabs = document.querySelectorAll('.tab');
+    const slider = document.querySelector('.slider');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Inicjalizacja slidera
+    function initSlider() {
+      const activeTab = document.querySelector('.tab.active');
+      slider.style.width = `${activeTab.offsetWidth}px`;
+      slider.style.left = `${activeTab.offsetLeft}px`;
+    }
+    
+    initSlider();
+    
+    // Obsługa kliknięcia zakładki
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Usuń klasę active ze wszystkich zakładek
+        tabs.forEach(t => t.classList.remove('active'));
+        
+        // Dodaj klasę active do klikniętej zakładki
+        this.classList.add('active');
+        
+        // Przesuń slider
+        slider.style.width = `${this.offsetWidth}px`;
+        slider.style.left = `${this.offsetLeft}px`;
+        
+        // Pokaż odpowiednią zawartość zakładki
+        const targetPanel = this.getAttribute('data-panel');
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === targetPanel.substring(1)) {
+            content.classList.add('active');
+          }
+        });
+      });
+    });
+    
+    // Obsługa zmiany rozmiaru okna
+    window.addEventListener('resize', initSlider);
+    
+    // Ustawienie dzisiejszej daty jako domyślnej dla daty końcowej
+    const today = new Date();
+    const endDateInput = document.getElementById('endDate');
+    endDateInput.valueAsDate = today;
+    
+    // Ustawienie daty sprzed miesiąca jako domyślnej dla daty początkowej
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    const startDateInput = document.getElementById('startDate');
+    startDateInput.valueAsDate = lastMonth;
+  });
+</script>
+</body>
+</html>
