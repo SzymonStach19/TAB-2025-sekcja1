@@ -12,12 +12,12 @@
     body {
       background-color: #f5f5f5;
     }
-    
+
     .tabs-component {
       width: 100%;
       margin: 0 auto;
     }
-    
+
     .tabs {
       position: relative;
       display: flex;
@@ -28,7 +28,7 @@
       padding: 0;
       margin: 0 0 30px;
     }
-    
+
     .tab {
       position: relative;
       padding: 16px 20px;
@@ -38,11 +38,11 @@
       text-align: center;
       transition: color 0.3s ease;
     }
-    
+
     .tab.active {
       color: #fff;
     }
-    
+
     .slider {
       position: absolute;
       height: 100%;
@@ -51,7 +51,7 @@
       border-radius: 8px;
       transition: all 0.3s ease;
     }
-    
+
     .tab-content {
       display: none;
       padding: 20px;
@@ -59,11 +59,11 @@
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    
+
     .tab-content.active {
       display: block;
     }
-    
+
     .form-group {
       margin-bottom: 20px;
     }
@@ -145,7 +145,7 @@
         </div>
         <div class="card-body">
           <p>Raport przedstawia analizę zysków magazynu na podstawie ilości produktów w zrealizowanych rezerwacjach, ceny zakupu i sprzedaży.</p>
-          
+
           <form th:action="@{/reports/profit}" method="post" class="mt-4">
             <div class="row">
               <div class="col-md-6">
@@ -153,7 +153,7 @@
                   <label for="productCategory" class="form-label">Kategoria produktu</label>
                   <select class="form-select" id="productCategory" name="productCategory">
                     <option value="">Wszystkie kategorie</option>
-                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
                   </select>
                 </div>
               </div>
@@ -167,7 +167,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
@@ -182,7 +182,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="form-group">
               <label class="form-label">Agregacja</label>
               <div class="form-check">
@@ -192,7 +192,7 @@
                 </label>
               </div>
             </div>
-            
+
             <div class="d-flex justify-content-end mt-4">
               <button type="submit" class="btn btn-primary">
                 <i class="bi bi-file-earmark-pdf me-2"></i>Generuj PDF
@@ -202,7 +202,7 @@
         </div>
       </div>
     </div>
-    
+
     <div id="reservation-report" class="tab-content">
       <div class="card shadow-sm">
         <div class="card-header bg-dark text-white">
@@ -210,7 +210,7 @@
         </div>
         <div class="card-body">
           <p>Raport przedstawia podsumowanie rezerwacji produktów w magazynie. Zawiera informacje o łącznej liczbie dokonanych rezerwacji, liczbie rezerwacji potwierdzonych oraz anulowanych. Dodatkowo raport wskazuje najczęściej rezerwowane produkty.</p>
-          
+
           <form th:action="@{/reports/reservations}" method="post" class="mt-4">
             <div class="row">
               <div class="col-md-4">
@@ -218,7 +218,7 @@
                   <label for="reservationCategory" class="form-label">Kategoria produktu</label>
                   <select class="form-select" id="reservationCategory" name="productCategory">
                     <option value="">Wszystkie kategorie</option>
-                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
                   </select>
                 </div>
               </div>
@@ -227,7 +227,7 @@
                   <label for="productBrand" class="form-label">Marka produktu</label>
                   <select class="form-select" id="productBrand" name="productBrand">
                     <option value="">Wszystkie marki</option>
-                    <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                    <option th:each="brand : ${brands}" th:value="${brand}" th:text="${brand}"></option>
                   </select>
                 </div>
               </div>
@@ -235,14 +235,14 @@
                 <div class="form-group">
                   <label for="priceRange" class="form-label">Zakres ceny produktu</label>
                   <div class="input-group">
-                    <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Od" min="0">
+                    <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Od" min="0" step="0.01">
                     <span class="input-group-text">-</span>
-                    <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Do" min="0">
+                    <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Do" min="0" step="0.01">
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div class="form-group mt-3">
               <label class="form-label">Agregacja</label>
               <div class="row">
@@ -280,7 +280,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="d-flex justify-content-end mt-4">
               <button type="submit" class="btn btn-primary">
                 <i class="bi bi-file-earmark-pdf me-2"></i>Generuj PDF
@@ -294,36 +294,35 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Obsługa przesuwanych zakładek
     const tabs = document.querySelectorAll('.tab');
     const slider = document.querySelector('.slider');
     const tabContents = document.querySelectorAll('.tab-content');
-    
+
     // Inicjalizacja slidera
     function initSlider() {
       const activeTab = document.querySelector('.tab.active');
       slider.style.width = `${activeTab.offsetWidth}px`;
       slider.style.left = `${activeTab.offsetLeft}px`;
     }
-    
+
     initSlider();
-    
+
     // Obsługa kliknięcia zakładki
     tabs.forEach(tab => {
       tab.addEventListener('click', function() {
         // Usuń klasę active ze wszystkich zakładek
         tabs.forEach(t => t.classList.remove('active'));
-        
+
         // Dodaj klasę active do klikniętej zakładki
         this.classList.add('active');
-        
+
         // Przesuń slider
         slider.style.width = `${this.offsetWidth}px`;
         slider.style.left = `${this.offsetLeft}px`;
-        
+
         // Pokaż odpowiednią zawartość zakładki
         const targetPanel = this.getAttribute('data-panel');
         tabContents.forEach(content => {
@@ -334,15 +333,15 @@
         });
       });
     });
-    
+
     // Obsługa zmiany rozmiaru okna
     window.addEventListener('resize', initSlider);
-    
+
     // Ustawienie dzisiejszej daty jako domyślnej dla daty końcowej
     const today = new Date();
     const endDateInput = document.getElementById('endDate');
     endDateInput.valueAsDate = today;
-    
+
     // Ustawienie daty sprzed miesiąca jako domyślnej dla daty początkowej
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
