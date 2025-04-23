@@ -125,7 +125,7 @@ public class ReportTABServiceImpl implements ReportTABService {
             document.add(Chunk.NEWLINE);
 
             // Add products table
-            PdfPTable table = new PdfPTable(8); // Increased from 6 to 8 columns
+            PdfPTable table = new PdfPTable(10); // Increased to include total purchase and sale prices
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
             table.setSpacingAfter(10f);
@@ -135,28 +135,34 @@ public class ReportTABServiceImpl implements ReportTABService {
             table.addCell(cell);
             table.addCell(new PdfPCell(new Phrase("Kategoria", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Marka", headerFont)));
-            table.addCell(new PdfPCell(new Phrase("Cena zakupu (jedn.)", headerFont))); // Added purchase unit price
-            table.addCell(new PdfPCell(new Phrase("Cena sprzedaży (jedn.)", headerFont))); // Added sale unit price
-            table.addCell(new PdfPCell(new Phrase("Ilość sprzedana", headerFont)));
-            table.addCell(new PdfPCell(new Phrase("Przychód", headerFont)));
-            table.addCell(new PdfPCell(new Phrase("Zysk", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Cena zakupu (jedn.)", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Cena sprzedaży (jedn.)", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Ilość", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Koszt całkowity", headerFont))); // Total purchase cost
+            table.addCell(new PdfPCell(new Phrase("Przychód całkowity", headerFont))); // Total sale revenue
+            table.addCell(new PdfPCell(new Phrase("Zysk jedn.", headerFont))); // Unit profit
+            table.addCell(new PdfPCell(new Phrase("Zysk całkowity", headerFont))); // Total profit
 
             // Product details
             for (Reservation reservation : completedReservations) {
                 Product product = reservation.getProduct();
                 int quantity = reservation.getQuantity();
-                double revenue = product.getPrice() * quantity;
-                double cost = product.getPurchasePrice() * quantity;
-                double profit = revenue - cost;
+                double unitPurchasePrice = product.getPurchasePrice();
+                double unitSalePrice = product.getPrice();
+                double totalPurchaseCost = unitPurchasePrice * quantity;
+                double totalSaleRevenue = unitSalePrice * quantity;
+                double unitProfit = unitSalePrice - unitPurchasePrice;
 
                 table.addCell(new PdfPCell(new Phrase(product.getName(), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(product.getCategory(), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(product.getBrand(), normalFont)));
-                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", product.getPurchasePrice()), normalFont))); // Purchase unit price
-                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", product.getPrice()), normalFont))); // Sale unit price
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", unitPurchasePrice), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", unitSalePrice), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(String.valueOf(quantity), normalFont)));
-                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", revenue), normalFont)));
-                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", profit), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", totalPurchaseCost), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", totalSaleRevenue), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", unitProfit), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", totalProfit), normalFont)));
             }
 
             document.add(table);
@@ -272,7 +278,7 @@ public class ReportTABServiceImpl implements ReportTABService {
             document.add(Chunk.NEWLINE);
 
             // Add reservations table
-            PdfPTable table = new PdfPTable(7); // Increased from 5 to 7 columns
+            PdfPTable table = new PdfPTable(7); // Increased to include unit price and total price
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
             table.setSpacingAfter(10f);
@@ -280,21 +286,24 @@ public class ReportTABServiceImpl implements ReportTABService {
             // Headers
             table.addCell(new PdfPCell(new Phrase("Produkt", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Użytkownik", headerFont)));
-            table.addCell(new PdfPCell(new Phrase("Cena zakupu (jedn.)", headerFont))); // Added purchase unit price
-            table.addCell(new PdfPCell(new Phrase("Cena sprzedaży (jedn.)", headerFont))); // Added sale unit price
+            table.addCell(new PdfPCell(new Phrase("Cena sprzedaży (jedn.)", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Ilość", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Wartość całkowita", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Data", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Status", headerFont)));
 
             // Reservation details
             for (Reservation reservation : allReservations) {
                 Product product = reservation.getProduct();
+                int quantity = reservation.getQuantity();
+                double unitSalePrice = product.getPrice();
+                double totalSaleValue = unitSalePrice * quantity;
 
                 table.addCell(new PdfPCell(new Phrase(product.getName(), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(reservation.getUser().getName(), normalFont)));
-                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", product.getPurchasePrice()), normalFont))); // Purchase unit price
-                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", product.getPrice()), normalFont))); // Sale unit price
-                table.addCell(new PdfPCell(new Phrase(String.valueOf(reservation.getQuantity()), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", unitSalePrice), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(quantity), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", totalSaleValue), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(reservation.getReservationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(getStatusInPolish(reservation.getStatus()), normalFont)));
             }
