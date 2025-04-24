@@ -41,6 +41,12 @@ public class Reservation {
     @Column(nullable = false)
     private ReservationStatus status;
 
+    @Column(nullable = false)
+    private Double price;
+
+    @Column(nullable = false)
+    private Double purchasePrice;
+
     public enum ReservationStatus {
         ACTIVE,
         COMPLETED,

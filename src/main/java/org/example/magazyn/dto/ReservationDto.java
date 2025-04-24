@@ -1,11 +1,13 @@
 package org.example.magazyn.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.magazyn.entity.Reservation;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class ReservationDto {
     private Long id;
     private Long productId;
@@ -15,4 +17,6 @@ public class ReservationDto {
     private LocalDateTime reservationDate;
     private Reservation.ReservationStatus status;
     private String statusChangedByUser;
+    private Double price;
+    private Double purchasePrice;
 }

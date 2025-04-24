@@ -44,6 +44,10 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setStatus(Reservation.ReservationStatus.ACTIVE);
         reservation.setReservationDate(LocalDateTime.now());
 
+        // Store current product prices in the reservation
+        reservation.setPrice(product.getPrice());
+        reservation.setPurchasePrice(product.getPurchasePrice());
+
         Reservation savedReservation = reservationRepository.save(reservation);
 
         historyService.logProductReservation(
@@ -96,6 +100,8 @@ public class ReservationServiceImpl implements ReservationService {
         dto.setQuantity(reservation.getQuantity());
         dto.setReservationDate(reservation.getReservationDate());
         dto.setStatus(reservation.getStatus());
+        dto.setPrice(reservation.getPrice());
+        dto.setPurchasePrice(reservation.getPurchasePrice());
 
         if (reservation.getStatusChangedByUser() != null) {
             dto.setStatusChangedByUser(reservation.getStatusChangedByUser().getEmail());
