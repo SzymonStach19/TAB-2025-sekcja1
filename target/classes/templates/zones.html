@@ -135,7 +135,7 @@
                 <tr th:each="zone : ${zones}">
                   <td th:text="${zone.name}"></td>
                   <td
-                    th:text="${#numbers.formatDecimal(zone.maxCapacity, 0, 2)}"
+                    th:text="${#numbers.formatDecimal(zone.maxCapacity, 1, 2)}"
                   ></td>
                   <td
                     th:text="${#numbers.formatDecimal(zone.currentWeight, 1, 2)}"

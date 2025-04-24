@@ -83,21 +83,21 @@ public class ReportTABController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Resource> generateReservationsReport(
-            @RequestParam(required = false) String productCategory,
-            @RequestParam(required = false) String productBrand,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
-            @RequestParam(value = "aggregation", required = false) List<String> aggregations) {
+        public ResponseEntity<Resource> generateReservationsReport(
+                @RequestParam(required = false) String productCategory,
+                @RequestParam(required = false) String productBrand,
+                @RequestParam(required = false) Double minPrice,
+                @RequestParam(required = false) Double maxPrice,
+                @RequestParam(value = "aggregation", required = false) List<String> aggregations) {
 
         boolean includeTotal = aggregations != null && aggregations.contains("totalReservations");
         boolean includeConfirmed = aggregations != null && aggregations.contains("confirmedReservations");
         boolean includeCancelled = aggregations != null && aggregations.contains("cancelledReservations");
-        boolean includeTurnover = aggregations != null && aggregations.contains("turnover");
+        boolean groupByCategory = aggregations != null && aggregations.contains("groupByCategory");
 
         byte[] pdfContent = reportTABService.generateReservationsReport(
                 productCategory, productBrand, minPrice, maxPrice,
-                includeTotal, includeConfirmed, includeCancelled, includeTurnover);
+                includeTotal, includeConfirmed, includeCancelled, groupByCategory);
 
         ByteArrayResource resource = new ByteArrayResource(pdfContent);
 
@@ -107,5 +107,6 @@ public class ReportTABController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .contentLength(pdfContent.length)
                 .body(resource);
-    }
+        }
+
 }

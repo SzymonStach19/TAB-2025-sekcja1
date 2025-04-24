@@ -393,43 +393,6 @@
                   </div>
                 </div>
 
-                <div class="row mb-4">
-                  <div class="col-md-6">
-                    <div class="form-group mb-3">
-                      <label for="reservationStartDate" class="form-label"
-                        >Data początkowa</label
-                      >
-                      <input
-                        type="date"
-                        class="form-control"
-                        id="reservationStartDate"
-                        name="startDate"
-                        required
-                      />
-                      <small class="text-muted"
-                        >Wybierz datę początkową okresu raportu</small
-                      >
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group mb-3">
-                      <label for="reservationEndDate" class="form-label"
-                        >Data końcowa</label
-                      >
-                      <input
-                        type="date"
-                        class="form-control"
-                        id="reservationEndDate"
-                        name="endDate"
-                        required
-                      />
-                      <small class="text-muted"
-                        >Wybierz datę końcową okresu raportu</small
-                      >
-                    </div>
-                  </div>
-                </div>
-
                 <div class="card mb-4">
                   <div class="card-header">
                     <strong>Opcje agregacji</strong>
@@ -498,13 +461,13 @@
                           <input
                             class="form-check-input"
                             type="checkbox"
-                            id="turnover"
+                            id="groupByCategory"
                             name="aggregation"
-                            value="turnover"
+                            value="groupByCategory"
                             checked
                           />
-                          <label class="form-check-label" for="turnover">
-                            <i class="bi bi-cash-coin me-2"></i>Obrót
+                          <label class="form-check-label" for="groupByCategory">
+                            <i class="bi bi-collection me-2"></i>Grupuj według kategorii
                           </label>
                         </div>
                       </div>
@@ -544,7 +507,6 @@
             tabs.forEach((t) => t.classList.remove("active"));
 
             this.classList.add("active");
-
             slider.style.width = `${this.offsetWidth}px`;
             slider.style.left = `${this.offsetLeft}px`;
 
@@ -565,7 +527,9 @@
         const reservationEndDateInput =
           document.getElementById("reservationEndDate");
         endDateInput.valueAsDate = today;
-        reservationEndDateInput.valueAsDate = today;
+        if (reservationEndDateInput) {
+          reservationEndDateInput.valueAsDate = today;
+        }
 
         const lastMonth = new Date();
         lastMonth.setMonth(lastMonth.getMonth() - 1);
@@ -574,7 +538,9 @@
           "reservationStartDate"
         );
         startDateInput.valueAsDate = lastMonth;
-        reservationStartDateInput.valueAsDate = lastMonth;
+        if (reservationStartDateInput) {
+          reservationStartDateInput.valueAsDate = lastMonth;
+        }
 
         setTimeout(function () {
           const alerts = document.querySelectorAll(".alert-dismissible");
