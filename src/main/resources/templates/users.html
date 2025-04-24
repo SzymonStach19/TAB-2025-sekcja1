@@ -156,15 +156,6 @@
                           <i class="bi bi-pencil-square me-1"></i>
                           Edytuj rolę
                         </button>
-                        <a
-                          href="#"
-                          class="btn btn-sm btn-danger"
-                          th:attr="data-user-id=${user.id},data-user-name=${user.firstName + ' ' + user.lastName}"
-                          onclick="showDeleteConfirmation(this)"
-                        >
-                          <i class="bi bi-trash me-1"></i>
-                          Usuń
-                        </a>
                       </div>
                     </td>
                   </tr>
@@ -343,20 +334,6 @@
         });
       });
 
-      function showDeleteConfirmation(element) {
-        const userId = element.getAttribute("data-user-id");
-        const userName = element.getAttribute("data-user-name");
-
-        document.getElementById("userNameToDelete").textContent = userName;
-
-        const deleteForm = document.getElementById("deleteUserForm");
-        deleteForm.action = `/users/delete/${userId}`;
-
-        const toast = new bootstrap.Toast(
-          document.getElementById("deleteConfirmationToast")
-        );
-        toast.show();
-      }
     </script>
   </body>
 </html>
