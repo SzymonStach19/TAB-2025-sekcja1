@@ -25,28 +25,18 @@ public class ZoneController {
     private final ZoneService zoneService;
     private final ProductService productService;
     private final HistoryService historyService;
-    // Add UserService if you have one
-    // private final UserService userService;
-
-    // Helper method to get current user ID
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            return 1L; // Default ID or system ID, adjust as needed
+            return 1L; 
         }
 
-        // Option 1: If you store the user ID in the authentication principal
-        // Try to get it from authentication principal
         Object principal = authentication.getPrincipal();
         if (principal instanceof org.example.magazyn.entity.User) {
             return ((org.example.magazyn.entity.User) principal).getId();
         }
-
-        // Option 2: If you have a UserService to look up user by username/email
-        // return userService.findByUsername(username).getId();
-
-        // Fallback to default/system user ID
-        return 1L; // Replace with an appropriate default or system user ID
+        
+        return 1L;
     }
 
     @GetMapping
@@ -72,10 +62,8 @@ public class ZoneController {
         try {
             Zone createdZone = zoneService.createZone(zoneDto);
 
-            // Use our helper method to get current user ID
             Long userId = getCurrentUserId();
 
-            // Log zone creation in history
             historyService.logZoneCreation(
                     userId,
                     createdZone.getId(),
@@ -119,17 +107,14 @@ public class ZoneController {
         }
 
         try {
-            // Get the zone before updating to compare values
             Zone existingZone = zoneService.getZoneById(id);
             String oldName = existingZone.getName();
             double oldCapacity = existingZone.getMaxCapacity();
 
             Zone updatedZone = zoneService.updateZone(id, zoneDto);
 
-            // Use our helper method to get current user ID
             Long userId = getCurrentUserId();
 
-            // Log zone update in history
             historyService.logZoneUpdate(
                     userId,
                     updatedZone.getId(),
@@ -154,10 +139,8 @@ public class ZoneController {
         try {
             Zone zone = zoneService.getZoneById(id);
 
-            // Use our helper method to get current user ID
             Long userId = getCurrentUserId();
 
-            // Log zone deletion in history before the zone is deleted
             historyService.logZoneDeletion(
                     userId,
                     zone.getId(),
@@ -195,10 +178,8 @@ public class ZoneController {
 
             zoneService.assignProductToZone(productId, zoneId);
 
-            // Use our helper method to get current user ID
             Long userId = getCurrentUserId();
 
-            // Log product zone assignment in history
             historyService.logProductZoneAssignment(
                     userId,
                     productId,
@@ -235,10 +216,8 @@ public class ZoneController {
             Product product = productService.getProductById(productId);
             Zone zone = zoneService.getZoneById(zoneId);
 
-            // Use our helper method to get current user ID
             Long userId = getCurrentUserId();
 
-            // Log product zone removal in history before removing
             historyService.logProductZoneRemoval(
                     userId,
                     productId,

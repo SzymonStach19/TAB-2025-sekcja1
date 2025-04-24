@@ -43,7 +43,6 @@ public class HistoryServiceImpl implements HistoryService {
         return historyRepository.findByUserId(userId);
     }
 
-    // Product reservation history
     @Override
     public History logProductReservation(Long userId, Long productId, String productName, int quantity) {
         return addHistoryEntry(
@@ -72,7 +71,6 @@ public class HistoryServiceImpl implements HistoryService {
         );
     }
 
-    // Zone management history
     @Override
     public History logZoneCreation(Long userId, Long zoneId, String zoneName, double maxCapacity) {
         return addHistoryEntry(
@@ -103,7 +101,6 @@ public class HistoryServiceImpl implements HistoryService {
         );
     }
 
-    // Product zone assignment history
     @Override
     public History logProductZoneAssignment(Long userId, Long productId, String productName,
                                             Long zoneId, String zoneName, int quantity) {
@@ -126,7 +123,6 @@ public class HistoryServiceImpl implements HistoryService {
         );
     }
 
-    // User role management history
     @Override
     public History logUserRoleChange(Long adminUserId, Long targetUserId, String targetUserEmail,
                                      String oldRole, String newRole) {

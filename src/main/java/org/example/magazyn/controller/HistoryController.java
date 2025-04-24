@@ -28,26 +28,21 @@ public class HistoryController {
     public String viewHistory(Model model, @AuthenticationPrincipal UserDetails currentUser) {
         User user = userService.findUserByEmail(currentUser.getUsername());
 
-        // Sprawdzanie, czy użytkownik ma rolę ADMIN
         boolean isAdmin = user.getRoles().stream()
                 .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
 
         List<History> historyList;
         if (isAdmin) {
-            // Admin widzi całą historię
             historyList = historyService.getAllHistory();
         } else {
-            // Zwykły użytkownik widzi tylko swoją historię
             historyList = historyService.getUserHistory(user.getId());
         }
 
-        // Konwersja na DTO z nazwami użytkowników
         List<HistoryDto> historyDtoList = historyList.stream()
                 .map(history -> {
                     HistoryDto dto = new HistoryDto();
                     dto.setId(history.getId());
 
-                    // Pobierz nazwę użytkownika na podstawie ID
                     User historyUser = userService.findUserByEmail(
                             userService.findAllUsers().stream()
                                     .filter(u -> u.getId().equals(history.getUserId()))

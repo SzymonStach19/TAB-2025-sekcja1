@@ -38,12 +38,10 @@ public class ReportServiceImpl implements ReportService {
     @Override
     @Transactional
     public Report generateReportForReservation(Reservation reservation, Principal principal) {
-        // Check if report already exists
         if (reportRepository.findByReservation(reservation).isPresent()) {
             throw new IllegalStateException("Raport dla tej rezerwacji już istnieje");
         }
 
-        // Create reports directory if not exists
         File directory = new File(reportsDirectory);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -54,22 +52,18 @@ public class ReportServiceImpl implements ReportService {
             throw new IllegalArgumentException("Użytkownik nie został znaleziony");
         }
 
-        // Generate unique filename
         String filename = "reservation_report_" + reservation.getId() + ".pdf";
         String filePath = reportsDirectory + File.separator + filename;
 
-        // Create PDF
         try (PdfWriter writer = new PdfWriter(filePath);
              PdfDocument pdf = new PdfDocument(writer);
              Document document = new Document(pdf)) {
 
-            // Title
             document.add(new Paragraph("Raport Rezerwacji")
                     .setTextAlignment(TextAlignment.CENTER)
                     .setFontSize(16)
                     .setBold());
 
-            // Reservation Details Table
             Table table = new Table(2);
             table.addCell("ID Rezerwacji");
             table.addCell(String.valueOf(reservation.getId()));
@@ -97,7 +91,6 @@ public class ReportServiceImpl implements ReportService {
             table.addCell(reservation.getUser().getEmail());
 
             table.addCell("Rezerwacje potwierdzil");
-            // Changed this line to handle the updated statusChangedByUser relationship
             table.addCell(reservation.getStatusChangedByUser() != null
                     ? reservation.getStatusChangedByUser().getEmail()
                     : "Nie dotyczy");
@@ -112,7 +105,6 @@ public class ReportServiceImpl implements ReportService {
             throw new RuntimeException(e);
         }
 
-        // Create Report entity
         Report report = new Report();
         report.setReservation(reservation);
         report.setFilePath(filePath);
@@ -134,7 +126,6 @@ public class ReportServiceImpl implements ReportService {
         reportDto.setReservationId(reservation.getId());
         reportDto.setFilePath(report.getFilePath());
         reportDto.setReportGenerationDate(report.getReportGenerationDate());
-        // Updated to use the new statusChangedByUser relationship
         reportDto.setGeneratedByUser(
                 reservation.getStatusChangedByUser() != null
                         ? reservation.getStatusChangedByUser().getEmail()

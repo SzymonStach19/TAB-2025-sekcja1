@@ -1,8 +1,5 @@
 package org.example.magazyn.service;
 
-import org.example.magazyn.entity.User;
-import org.springframework.http.ResponseEntity;
-
 import java.time.LocalDate;
 
 public interface ReportTABService {

@@ -28,7 +28,7 @@ public class ReservationController {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono produktu"));
         model.addAttribute("product", product);
-        return "reserve";  // New reservation form page
+        return "reserve"; 
     }
 
     @PostMapping("/products/reserve/{id}")
@@ -73,7 +73,6 @@ public class ReservationController {
             Reservation.ReservationStatus status =
                     Reservation.ReservationStatus.valueOf(payload.get("status"));
 
-            // Pass principal to the service method
             reservationService.updateReservationStatus(id, status, principal);
 
             return ResponseEntity.ok(Map.of("message", "Status zaktualizowany"));

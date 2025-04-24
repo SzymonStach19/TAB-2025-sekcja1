@@ -34,13 +34,11 @@ public class ReportTABController {
 
     @GetMapping
     public String showReportsPage(Model model) {
-        // Get distinct categories from products
         List<String> categories = productRepository.findAll().stream()
                 .map(product -> product.getCategory())
                 .distinct()
                 .collect(Collectors.toList());
 
-        // Get distinct brands from products
         List<String> brands = productRepository.findAll().stream()
                 .map(product -> product.getBrand())
                 .distinct()

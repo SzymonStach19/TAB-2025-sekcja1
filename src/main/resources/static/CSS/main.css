@@ -1,80 +1,32 @@
-body {
-    background-color: #f5f5f5;
-}
-
 a {
     text-decoration: none;
 }
 
-td{
+body {
+    background-color: #f5f5f5;
+}
+
+td {
     vertical-align: middle;
 }
 
-.badge{
+tr {
+    border-radius: 10px;
+}
+
+.badge {
     line-height: 30px;
     vertical-align: middle;
-}
-
-.table {
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.table-container {
-    margin-top: 2rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    padding: 1.5rem;
-}
-
-.role-badge {
-    margin-right: 0.3rem;
-    font-size: 0.85rem;
-}
-
-.page-header {
-    background-color: #f8f9fa;
-    padding: 1.5rem 0;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.btn-edit {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-}
-
-.modal-content {
-    border-radius: 8px;
-}
-
-.form-check {
-    margin-bottom: 0.75rem;
-}
-
-.card {
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: none;
-}
-
-.card-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #eee;
-    padding: 1rem 1.5rem;
-}
-
-.form-control:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .btn {
     border-radius: 4px;
     padding: 0.5rem 1rem;
+}
+
+.btn-edit {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
 }
 
 .btn-primary {
@@ -95,6 +47,136 @@ td{
 .btn-secondary:hover {
     background-color: #5a6268;
     border-color: #545b62;
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    padding: 1rem 1.5rem;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-check {
+    margin-bottom: 0.75rem;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.icon-section i {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.jumbotron {
+    background-color: #343a40;
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+.modal-content {
+    border-radius: 8px;
+}
+
+.page-header {
+    background-color: #f5f5f5;
+    padding: 10px;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.role-badge {
+    margin-right: 0.3rem;
+    font-size: 0.85rem;
+}
+
+.slider {
+    position: absolute;
+    height: 100%;
+    background: #343a40;
+    z-index: 1;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.tab {
+    position: relative;
+    padding: 16px 20px;
+    cursor: pointer;
+    z-index: 2;
+    flex: 1;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+.tab.active {
+    color: #fff;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 4px;
+    overflow: visible;
+}
+
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+.tabs {
+    position: relative;
+    display: flex;
+    list-style: none;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 0;
+    margin: 0 0 30px;
+}
+
+.tabs-component {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.toast-container {
+    z-index: 1050;
 }
 
 @media (max-width: 768px) {

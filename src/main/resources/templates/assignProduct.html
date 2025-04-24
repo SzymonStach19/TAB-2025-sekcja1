@@ -1,126 +1,305 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Przypisz produkt do strefy</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-        <link href="/css/main.css" rel="stylesheet">
-    </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
+<html
+  lang="pl"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.w3.org/1999/xhtml"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Przypisz produkt do strefy</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="/css/main.css" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/}">Magazyn</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/products}">Produkty</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasAnyRole('WAREHOUSEMAN', 'MANAGER', 'ADMIN')">
-                    <a class="nav-link" th:href="@{/zones}">Strefy</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasAnyRole('WAREHOUSEMAN', 'MANAGER', 'ADMIN')">
-                    <a class="nav-link" th:href="@{/reservations}">Rezerwacje</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
-                    <a class="nav-link" th:href="@{/users}">Użytkownicy</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
-                    <a class="nav-link" th:href="@{/history}">Historia operacji</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
-                    <a class="nav-link" th:href="@{/reports}">Raporty</a>
-                  </li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" th:href="@{/login}">Logowanie</a>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" th:href="@{/register}">Rejestracja</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/logout}">Wyloguj się</a>
-                </li>
-            </ul>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/products}">Produkty</a>
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyRole('WAREHOUSEMAN', 'MANAGER', 'ADMIN')"
+            >
+              <a class="nav-link active" th:href="@{/zones}">Strefy</a>
+            </li>
+            <li
+              class="nav-item"
+              sec:authorize="hasAnyRole('WAREHOUSEMAN', 'MANAGER', 'ADMIN')"
+            >
+              <a class="nav-link" th:href="@{/reservations}">Rezerwacje</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+              <a class="nav-link" th:href="@{/users}">Użytkownicy</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+              <a class="nav-link" th:href="@{/history}">Historia operacji</a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
+              <a class="nav-link" th:href="@{/reports}">Raporty</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+              <a class="nav-link" th:href="@{/login}">Logowanie</a>
+            </li>
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+              <a class="nav-link" th:href="@{/register}">Rejestracja</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+              <a class="nav-link" th:href="@{/logout}">Wyloguj się</a>
+            </li>
+          </ul>
         </div>
-    </div>
-</nav>
-<div class="container-fluid px-4 py-4">
-    <div class="row align-items-center mb-4">
-        <div class="col">
+      </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+      <div class="page-header mb-4">
+        <div class="row align-items-center">
+          <div class="col">
             <h1 class="display-6 fw-bold">Przypisz produkt do strefy</h1>
+          </div>
+          <div class="col-auto">
+            <a th:href="@{/zones}" class="btn btn-secondary">
+              <i class="bi bi-arrow-left me-2"></i>Powrót do listy stref
+            </a>
+          </div>
         </div>
-    </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header">
-                    <h5 class="mb-0">Strefa: <span class="text-primary" th:text="${zone.name}"></span></h5>
+      </div>
+
+      <div
+        th:if="${errorMessage}"
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="bi bi-exclamation-triangle-fill me-2"></i
+        ><span th:text="${errorMessage}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div
+        th:if="${successMessage}"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <i class="bi bi-check-circle-fill me-2"></i
+        ><span th:text="${successMessage}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-4 mx-auto">
+          <div class="card">
+            <div class="card-header">
+              <strong>Strefa: <span th:text="${zone.name}"></span></strong>
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <strong>Maksymalna pojemność:</strong>
                 </div>
-                <div class="card-body p-4">
-                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <span th:text="${errorMessage}"></span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="col-md-6">
+                  <span
+                    th:text="${#numbers.formatDecimal(zone.maxCapacity, 0, 2)} + ' kg'"
+                  ></span>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <strong>Aktualna waga:</strong>
+                </div>
+                <div class="col-md-6">
+                  <span
+                    th:text="${#numbers.formatDecimal(zone.currentWeight, 1, 2)} + ' kg'"
+                  ></span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <strong>Wykorzystanie:</strong>
+                </div>
+                <div class="col-md-6">
+                  <div class="progress">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      th:style="'width: ' + ${#numbers.formatDecimal((zone.currentWeight / zone.maxCapacity) * 100, 0, 0)} + '%'"
+                      th:aria-valuenow="${#numbers.formatDecimal((zone.currentWeight / zone.maxCapacity) * 100, 0, 0)}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      <span
+                        th:text="${#numbers.formatDecimal((zone.currentWeight / zone.maxCapacity) * 100, 0, 2)} + '%'"
+                      ></span>
                     </div>
-
-                    <form th:action="@{/zones/assignProduct}" method="post" class="needs-validation" novalidate>
-                        <input type="hidden" name="zoneId" th:value="${zone.id}">
-                        <div class="mb-4">
-                            <label for="productSelect" class="form-label">Wybierz produkt:</label>
-                            <select name="productId" id="productSelect" class="form-select" required>
-                                <option value="">Wybierz produkt</option>
-                                <option th:each="product : ${products}"
-                                        th:if="${product.quantity > 0}"
-                                        th:value="${product.id}"
-                                        th:text="${product.name + ' (Weight: ' + product.weight + ' kg, Quantity: ' + product.quantity + ')'}">
-                                </option>
-                            </select>
-                            <div class="invalid-feedback">Wybierz produkt.</div>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-plus-circle me-2"></i>Przypisz produkt
-                            </button>
-                            <a th:href="@{/zones}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle me-2"></i>Anuluj
-                            </a>
-                        </div>
-                    </form>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
 
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="bi bi-check-circle me-2"></i>
-                <span th:text="${successMessage}"></span>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      <div class="card">
+        <div class="card-header">
+          <strong>Przypisz nowy produkt</strong>
         </div>
-    </div>
-    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="bi bi-exclamation-circle me-2"></i>
-                <span th:text="${errorMessage}"></span>
+        <div class="card-body">
+          <form
+            th:action="@{/zones/assignProduct}"
+            method="post"
+            class="needs-validation"
+            novalidate
+          >
+            <input type="hidden" name="zoneId" th:value="${zone.id}" />
+            <div class="mb-4">
+              <label for="productSelect" class="form-label"
+                >Wybierz produkt</label
+              >
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="bi bi-box-seam"></i
+                ></span>
+                <select
+                  name="productId"
+                  id="productSelect"
+                  class="form-select"
+                  required
+                >
+                  <option value="">Wybierz produkt</option>
+                  <option
+                    th:each="product : ${products}"
+                    th:if="${product.quantity > 0}"
+                    th:value="${product.id}"
+                    th:text="${product.name + ' (' + product.weight + ' kg × ' + product.quantity + ' szt.)'}"
+                  ></option>
+                </select>
+              </div>
+              <div class="invalid-feedback">Wybierz produkt.</div>
+              <small class="text-muted"
+                >Wybierz produkt, który chcesz przypisać do strefy. Pokazane są
+                tylko produkty z dostępną ilością.</small
+              >
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/validation.js"></script>
-</body>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+              <a th:href="@{/zones}" class="btn btn-secondary me-md-2">
+                <i class="bi bi-x-circle me-2"></i>Anuluj
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-2"></i>Przypisz produkt
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <strong>Lista produktów w strefie</strong>
+        </div>
+        <div class="card-body">
+          <div
+            th:if="${#lists.isEmpty(zone.products)}"
+            class="alert alert-info text-center mt-3"
+          >
+            W tej strefie nie ma jeszcze żadnych produktów
+          </div>
+
+          <div
+            class="table-container"
+            th:unless="${#lists.isEmpty(zone.products)}"
+          >
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Nazwa produktu</th>
+                  <th>Kategoria</th>
+                  <th>Waga (kg)</th>
+                  <th>Ilość</th>
+                  <th>Łączna waga (kg)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="product : ${zone.products}">
+                  <td th:text="${product.name}"></td>
+                  <td th:text="${product.category}"></td>
+                  <td
+                    th:text="${#numbers.formatDecimal(product.weight, 0, 2)}"
+                  ></td>
+                  <td th:text="${product.quantity}"></td>
+                  <td
+                    th:text="${#numbers.formatDecimal(product.weight * product.quantity, 0, 2)}"
+                  ></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        const forms = document.querySelectorAll(".needs-validation");
+        Array.from(forms).forEach(function (form) {
+          form.addEventListener(
+            "submit",
+            function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      })();
+
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+          const alerts = document.querySelectorAll(".alert-dismissible");
+          alerts.forEach((alert) => {
+            const closeButton = alert.querySelector(".btn-close");
+            if (closeButton) closeButton.click();
+          });
+        }, 5000);
+      });
+    </script>
+  </body>
 </html>

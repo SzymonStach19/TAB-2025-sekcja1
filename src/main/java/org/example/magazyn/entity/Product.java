@@ -28,10 +28,10 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private Double price;  // Selling price
+    private Double price; 
 
     @Column(nullable = false)
-    private Double purchasePrice;  // Purchase price
+    private Double purchasePrice;
 
     @Column(nullable = false)
     private Double weight;

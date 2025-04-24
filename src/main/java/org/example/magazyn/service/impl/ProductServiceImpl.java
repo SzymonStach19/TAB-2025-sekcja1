@@ -52,7 +52,6 @@ public class ProductServiceImpl implements ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        // Dodanie wpisu do historii
         historyService.addHistoryEntry(
                 currentUser.getId(),
                 "ADD_PRODUCT",
@@ -78,7 +77,6 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(0);
         productRepository.save(product);
 
-        // Dodanie wpisu do historii
         historyService.addHistoryEntry(
                 user.getId(),
                 "DELETE_PRODUCT",
@@ -101,7 +99,6 @@ public class ProductServiceImpl implements ProductService {
 
         Product updatedProduct = productRepository.save(existingProduct);
 
-        // Dodanie wpisu do historii
         historyService.addHistoryEntry(
                 user.getId(),
                 "UPDATE_PRODUCT",

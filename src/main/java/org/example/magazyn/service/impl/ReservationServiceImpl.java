@@ -46,7 +46,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        // Log the reservation to history
         historyService.logProductReservation(
                 user.getId(),
                 product.getId(),
@@ -80,7 +79,6 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setStatus(Reservation.ReservationStatus.CANCELLED);
         reservationRepository.save(reservation);
 
-        // Log cancellation to history
         historyService.logReservationCancellation(
                 currentUser.getId(),
                 reservationId,
@@ -99,7 +97,6 @@ public class ReservationServiceImpl implements ReservationService {
         dto.setReservationDate(reservation.getReservationDate());
         dto.setStatus(reservation.getStatus());
 
-        // Update to handle User type for statusChangedByUser
         if (reservation.getStatusChangedByUser() != null) {
             dto.setStatusChangedByUser(reservation.getStatusChangedByUser().getEmail());
         } else {
@@ -121,7 +118,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public ReservationDto updateReservationStatus(Long reservationId, Reservation.ReservationStatus status, Principal principal) {
-        // Find the current user based on the principal's name
         User currentUser = userRepository.findByEmail(principal.getName());
         if (currentUser == null) {
             throw new IllegalArgumentException("Użytkownik nie został znaleziony");
@@ -130,18 +126,14 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono rezerwacji"));
 
-        // Get the old status before updating
         Reservation.ReservationStatus oldStatus = reservation.getStatus();
 
-        // Update status
         reservation.setStatus(status);
 
-        // Set the user who changed the status
         reservation.setStatusChangedByUser(currentUser);
 
         Reservation updatedReservation = reservationRepository.save(reservation);
 
-        // If status is COMPLETED, generate report
         if (status == Reservation.ReservationStatus.COMPLETED) {
             try {
                 reportService.generateReportForReservation(updatedReservation, principal);
@@ -150,7 +142,6 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
 
-        // Log status change to history
         historyService.logReservationStatusChange(
                 updatedReservation.getUser().getId(),
                 reservationId,

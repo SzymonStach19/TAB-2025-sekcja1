@@ -38,6 +38,7 @@ public class SpringSecurity implements WebMvcConfigurer{
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/login", "/register/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/products").hasAnyRole("USER", "WAREHOUSEMAN", "MANAGER", "ADMIN")
                         .requestMatchers("/products/add/**", "/products/edit/**", "/products/delete/**", "/products/reserve/**").hasAnyRole("ADMIN", "WAREHOUSEMAN", "MANAGER")
                         .requestMatchers("/zones", "/zones/add/**", "/zones/edit/**", "/zones/delete/", "/zones/details/**", "/zones/assignProduct/**", "/zones/removeProduct/**").hasAnyRole("ADMIN", "WAREHOUSEMAN", "MANAGER")

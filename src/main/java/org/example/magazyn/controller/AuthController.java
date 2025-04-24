@@ -86,25 +86,19 @@ public class AuthController {
                 roles = new ArrayList<>();
             }
 
-            // Get the target user
             UserDto targetUserDto = userService.findAllUsers().stream()
                     .filter(user -> user.getId().equals(userId))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Get the old role
             String oldRole = targetUserDto.getRole();
 
-            // Get the new role (assuming one role per user for simplicity)
             String newRole = roles.isEmpty() ? "ROLE_USER" : roles.get(0);
 
-            // Update roles
             userService.updateUserRoles(userId, roles);
 
-            // Get admin user ID
             User adminUser = userService.findUserByEmail(currentUser.getUsername());
 
-            // Log the role change in history
             historyService.logUserRoleChange(
                     adminUser.getId(),
                     userId,

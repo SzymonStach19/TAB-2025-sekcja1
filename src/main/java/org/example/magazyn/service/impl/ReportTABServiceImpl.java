@@ -6,7 +6,6 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.example.magazyn.entity.*;
-import org.example.magazyn.repository.ProductRepository;
 import org.example.magazyn.repository.ReservationRepository;
 import org.example.magazyn.repository.ZoneRepository;
 import org.example.magazyn.service.ReportTABService;
@@ -24,9 +23,6 @@ import java.util.stream.Collectors;
 public class ReportTABServiceImpl implements ReportTABService {
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private ReservationRepository reservationRepository;
 
     @Autowired
@@ -40,28 +36,23 @@ public class ReportTABServiceImpl implements ReportTABService {
             PdfWriter.getInstance(document, baos);
             document.open();
 
-            // Utwórz fonty z obsługą polskich znaków
             BaseFont baseFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
             Font titleFont = new Font(baseFont, 18, Font.BOLD);
             Font normalFont = new Font(baseFont, 12, Font.NORMAL);
             Font headerFont = new Font(baseFont, 12, Font.BOLD);
 
-            // Add title
             Paragraph title = new Paragraph("Raport generowanego zysku", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
-            // Add generation date
             document.add(new Paragraph("Wygenerowano: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), normalFont));
 
-            // Add category information
             if (productCategory != null && !productCategory.isEmpty()) {
                 document.add(new Paragraph("Kategoria: " + productCategory, normalFont));
             } else {
                 document.add(new Paragraph("Kategoria: Wszystkie", normalFont));
             }
 
-            // Add zone information
             if (zoneId != null) {
                 Zone zone = zoneRepository.findById(zoneId).orElse(null);
                 if (zone != null) {
@@ -75,10 +66,8 @@ public class ReportTABServiceImpl implements ReportTABService {
                     " do " + endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), normalFont));
             document.add(Chunk.NEWLINE);
 
-            // Calculate profit from completed reservations
             List<Reservation> completedReservations = reservationRepository.findByStatus(Reservation.ReservationStatus.COMPLETED);
 
-            // Filter by date range
             completedReservations = completedReservations.stream()
                     .filter(r -> {
                         LocalDate reservationDate = r.getReservationDate().toLocalDate();
@@ -86,14 +75,12 @@ public class ReportTABServiceImpl implements ReportTABService {
                     })
                     .collect(Collectors.toList());
 
-            // Filter by category if specified
             if (productCategory != null && !productCategory.isEmpty()) {
                 completedReservations = completedReservations.stream()
                         .filter(r -> r.getProduct().getCategory().equals(productCategory))
                         .collect(Collectors.toList());
             }
 
-            // Filter by zone if specified
             if (zoneId != null) {
                 completedReservations = completedReservations.stream()
                         .filter(r -> r.getProduct().getZone() != null &&
@@ -101,7 +88,6 @@ public class ReportTABServiceImpl implements ReportTABService {
                         .collect(Collectors.toList());
             }
 
-            // Calculate profit
             double totalRevenue = 0;
             double totalCost = 0;
 
@@ -118,19 +104,16 @@ public class ReportTABServiceImpl implements ReportTABService {
 
             double totalProfit = totalRevenue - totalCost;
 
-            // Add profit information
             document.add(new Paragraph("Łączny przychód: " + String.format("%.2f zł", totalRevenue), normalFont));
             document.add(new Paragraph("Łączny koszt: " + String.format("%.2f zł", totalCost), normalFont));
             document.add(new Paragraph("Wygenerowany zysk: " + String.format("%.2f zł", totalProfit), normalFont));
             document.add(Chunk.NEWLINE);
 
-            // Add products table
-            PdfPTable table = new PdfPTable(10); // Increased to include total purchase and sale prices
+            PdfPTable table = new PdfPTable(10); 
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
             table.setSpacingAfter(10f);
 
-            // Headers
             PdfPCell cell = new PdfPCell(new Phrase("Produkt", headerFont));
             table.addCell(cell);
             table.addCell(new PdfPCell(new Phrase("Kategoria", headerFont)));
@@ -138,12 +121,11 @@ public class ReportTABServiceImpl implements ReportTABService {
             table.addCell(new PdfPCell(new Phrase("Cena zakupu (jedn.)", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Cena sprzedaży (jedn.)", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Ilość", headerFont)));
-            table.addCell(new PdfPCell(new Phrase("Koszt całkowity", headerFont))); // Total purchase cost
-            table.addCell(new PdfPCell(new Phrase("Przychód całkowity", headerFont))); // Total sale revenue
-            table.addCell(new PdfPCell(new Phrase("Zysk jedn.", headerFont))); // Unit profit
-            table.addCell(new PdfPCell(new Phrase("Zysk całkowity", headerFont))); // Total profit
+            table.addCell(new PdfPCell(new Phrase("Koszt całkowity", headerFont))); 
+            table.addCell(new PdfPCell(new Phrase("Przychód całkowity", headerFont))); 
+            table.addCell(new PdfPCell(new Phrase("Zysk jedn.", headerFont))); 
+            table.addCell(new PdfPCell(new Phrase("Zysk całkowity", headerFont))); 
 
-            // Product details
             for (Reservation reservation : completedReservations) {
                 Product product = reservation.getProduct();
                 int quantity = reservation.getQuantity();
@@ -184,21 +166,17 @@ public class ReportTABServiceImpl implements ReportTABService {
             PdfWriter.getInstance(document, baos);
             document.open();
 
-            // Utwórz fonty z obsługą polskich znaków
             BaseFont baseFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1250, BaseFont.EMBEDDED);
             Font titleFont = new Font(baseFont, 18, Font.BOLD);
             Font normalFont = new Font(baseFont, 12, Font.NORMAL);
             Font headerFont = new Font(baseFont, 12, Font.BOLD);
 
-            // Add title
             Paragraph title = new Paragraph("Raport potwierdzonych rezerwacji", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
-            // Add generation date
             document.add(new Paragraph("Wygenerowano: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), normalFont));
 
-            // Add filter parameters
             if (productCategory != null && !productCategory.isEmpty()) {
                 document.add(new Paragraph("Kategoria: " + productCategory, normalFont));
             } else {
@@ -219,10 +197,8 @@ public class ReportTABServiceImpl implements ReportTABService {
 
             document.add(Chunk.NEWLINE);
 
-            // Get all reservations
             List<Reservation> allReservations = reservationRepository.findAll();
 
-            // Apply filters
             if (productCategory != null && !productCategory.isEmpty()) {
                 allReservations = allReservations.stream()
                         .filter(r -> r.getProduct().getCategory().equals(productCategory))
@@ -247,7 +223,6 @@ public class ReportTABServiceImpl implements ReportTABService {
                         .collect(Collectors.toList());
             }
 
-            // Count reservations by status
             if (includeTotal) {
                 long totalReservations = allReservations.size();
                 document.add(new Paragraph("Łączna liczba rezerwacji: " + totalReservations, normalFont));
@@ -277,13 +252,11 @@ public class ReportTABServiceImpl implements ReportTABService {
 
             document.add(Chunk.NEWLINE);
 
-            // Add reservations table
-            PdfPTable table = new PdfPTable(7); // Increased to include unit price and total price
+            PdfPTable table = new PdfPTable(7);
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
             table.setSpacingAfter(10f);
 
-            // Headers
             table.addCell(new PdfPCell(new Phrase("Produkt", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Użytkownik", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Cena sprzedaży (jedn.)", headerFont)));
@@ -292,7 +265,6 @@ public class ReportTABServiceImpl implements ReportTABService {
             table.addCell(new PdfPCell(new Phrase("Data", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Status", headerFont)));
 
-            // Reservation details
             for (Reservation reservation : allReservations) {
                 Product product = reservation.getProduct();
                 int quantity = reservation.getQuantity();
