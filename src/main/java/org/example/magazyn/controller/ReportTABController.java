@@ -58,12 +58,19 @@ public class ReportTABController {
             @RequestParam(required = false) String productCategory,
             @RequestParam(required = false) Long warehouseZone,
             @RequestParam String startDate,
-            @RequestParam String endDate) {
+            @RequestParam String endDate,
+            @RequestParam(value = "aggregation", required = false) List<String> aggregations) {
 
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
 
-        byte[] pdfContent = reportTABService.generateProfitReport(productCategory, warehouseZone, start, end);
+        boolean includeTotalRevenue = aggregations != null && aggregations.contains("totalRevenue");
+        boolean includeTotalCost = aggregations != null && aggregations.contains("totalCost");
+        boolean includeProfit = aggregations != null && aggregations.contains("profit");
+
+        byte[] pdfContent = reportTABService.generateProfitReport(
+                productCategory, warehouseZone, start, end,
+                includeTotalRevenue, includeTotalCost, includeProfit);
 
         ByteArrayResource resource = new ByteArrayResource(pdfContent);
 

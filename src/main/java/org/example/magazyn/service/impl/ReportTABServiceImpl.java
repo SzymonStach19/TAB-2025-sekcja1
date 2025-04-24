@@ -29,7 +29,8 @@ public class ReportTABServiceImpl implements ReportTABService {
     private ZoneRepository zoneRepository;
 
     @Override
-    public byte[] generateProfitReport(String productCategory, Long zoneId, LocalDate startDate, LocalDate endDate) {
+    public byte[] generateProfitReport(String productCategory, Long zoneId, LocalDate startDate, LocalDate endDate,
+                                       boolean includeTotalRevenue, boolean includeTotalCost, boolean includeProfit) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             Document document = new Document(PageSize.A4);
@@ -104,12 +105,22 @@ public class ReportTABServiceImpl implements ReportTABService {
 
             double totalProfit = totalRevenue - totalCost;
 
-            document.add(new Paragraph("Łączny przychód: " + String.format("%.2f zł", totalRevenue), normalFont));
-            document.add(new Paragraph("Łączny koszt: " + String.format("%.2f zł", totalCost), normalFont));
-            document.add(new Paragraph("Wygenerowany zysk: " + String.format("%.2f zł", totalProfit), normalFont));
+            // Wyświetlenie agregacji w zależności od wybranych opcji
+            if (includeTotalRevenue) {
+                document.add(new Paragraph("Łączny przychód: " + String.format("%.2f zł", totalRevenue), normalFont));
+            }
+
+            if (includeTotalCost) {
+                document.add(new Paragraph("Łączny koszt: " + String.format("%.2f zł", totalCost), normalFont));
+            }
+
+            if (includeProfit) {
+                document.add(new Paragraph("Wygenerowany zysk: " + String.format("%.2f zł", totalProfit), normalFont));
+            }
+
             document.add(Chunk.NEWLINE);
 
-            PdfPTable table = new PdfPTable(10); 
+            PdfPTable table = new PdfPTable(10);
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
             table.setSpacingAfter(10f);
@@ -121,10 +132,10 @@ public class ReportTABServiceImpl implements ReportTABService {
             table.addCell(new PdfPCell(new Phrase("Cena zakupu (jedn.)", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Cena sprzedaży (jedn.)", headerFont)));
             table.addCell(new PdfPCell(new Phrase("Ilość", headerFont)));
-            table.addCell(new PdfPCell(new Phrase("Koszt całkowity", headerFont))); 
-            table.addCell(new PdfPCell(new Phrase("Przychód całkowity", headerFont))); 
-            table.addCell(new PdfPCell(new Phrase("Zysk jedn.", headerFont))); 
-            table.addCell(new PdfPCell(new Phrase("Zysk całkowity", headerFont))); 
+            table.addCell(new PdfPCell(new Phrase("Koszt całkowity", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Przychód całkowity", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Zysk jedn.", headerFont)));
+            table.addCell(new PdfPCell(new Phrase("Zysk całkowity", headerFont)));
 
             for (Reservation reservation : completedReservations) {
                 Product product = reservation.getProduct();
@@ -134,6 +145,7 @@ public class ReportTABServiceImpl implements ReportTABService {
                 double totalPurchaseCost = unitPurchasePrice * quantity;
                 double totalSaleRevenue = unitSalePrice * quantity;
                 double unitProfit = unitSalePrice - unitPurchasePrice;
+                double productProfit = (product.getPrice() * quantity) - (product.getPurchasePrice() * quantity);
 
                 table.addCell(new PdfPCell(new Phrase(product.getName(), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(product.getCategory(), normalFont)));
@@ -144,7 +156,7 @@ public class ReportTABServiceImpl implements ReportTABService {
                 table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", totalPurchaseCost), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", totalSaleRevenue), normalFont)));
                 table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", unitProfit), normalFont)));
-                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", totalProfit), normalFont)));
+                table.addCell(new PdfPCell(new Phrase(String.format("%.2f zł", productProfit), normalFont)));
             }
 
             document.add(table);
