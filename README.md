@@ -18,12 +18,9 @@ Kompleksowe rozwiązanie do zarządzania magazynem, umożliwiające śledzenie p
 - [Struktura Projektu](#struktura-projektu)
 - [Role Użytkowników i Uprawnienia](#role-użytkowników-i-uprawnienia)
 - [Kluczowe Funkcjonalności](#kluczowe-funkcjonalności)
-- [Dokumentacja API](#dokumentacja-api)
 - [Struktura Bazy Danych](#struktura-bazy-danych)
 - [Raporty](#raporty)
 - [Zrzuty Ekranu](#zrzuty-ekranu)
-- [Współpraca](#współpraca)
-- [Licencja](#licencja)
 
 ## 🔍 Przegląd
 
