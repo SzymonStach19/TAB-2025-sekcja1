@@ -175,4 +175,4 @@ Raporty są automatycznie zapisywane w katalogu `reports`.
 
 ## 🖼️ Zrzuty Ekranu
 
-*Zrzuty ekranu aplikacji mogą być dodane tutaj.*
+
