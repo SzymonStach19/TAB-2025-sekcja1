@@ -158,43 +158,25 @@
                           class="btn btn-sm btn-success"
                   >
                     <i class="bi bi-plus-circle"></i> Dodaj produkt
-                  </a>
-                  <a
+                  </a>                  <a
                           th:href="@{/zones/removeProduct/{id}(id=${zone.id})}"
                           class="btn btn-sm btn-danger"
                   >
                     <i class="bi bi-dash-circle"></i> Usuń produkt
+                  </a>                  <a
+                          th:href="@{/zones/edit/{id}(id=${zone.id})}"
+                          class="btn btn-sm btn-outline-secondary"
+                  >
+                    <i class="bi bi-pencil"></i> Edytuj
                   </a>
-
-                  <div class="btn-group" role="group">
-                    <button
-                            type="button"
-                            class="btn btn-sm btn-secondary dropdown-toggle"
-                            data-bs-toggle="dropdown"
-                    >
-                      <i class="bi bi-gear"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <a
-                                class="dropdown-item"
-                                th:href="@{/zones/edit/{id}(id=${zone.id})}"
-                        >
-                          <i class="bi bi-pencil"></i> Edytuj
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                                class="dropdown-item text-danger"
-                                href="#"
-                                th:attr="data-zone-id=${zone.id},data-zone-name=${zone.name}"
-                                onclick="showDeleteConfirmation(this)"
-                        >
-                          <i class="bi bi-trash"></i> Usuń
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  <button
+                          type="button"
+                          class="btn btn-sm btn-outline-danger"
+                          th:attr="data-zone-id=${zone.id},data-zone-name=${zone.name}"
+                          onclick="showDeleteConfirmation(this)"
+                  >
+                    <i class="bi bi-trash"></i> Usuń
+                  </button>
                 </div>
               </td>
             </tr>
